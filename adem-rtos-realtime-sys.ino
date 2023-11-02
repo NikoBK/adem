@@ -1,17 +1,44 @@
-int increment = 10;
-bool verbose = false;
+/* 
+  file: adem-rtos-realtime-sys.ino
+  author: nikobk
+  created on: november 2, 2023
+*/
 
-void setup() {
-	Serial.begin(115200);
-  if (verbose) {
-    Serial.println("The increment variable is: " + String(increment));
+// Use only core 1 for demo purposes
+#if CONFIG_FREERTOS_UNICORE
+static const BaseType_t app_cpu = 0;
+#else
+static const BaseType_t app_cpu = 1;
+#endif
+
+int delayMS = 1000;
+
+// Create a new task.
+void runDemoTask(void *parameter) {
+  // Our superloop.
+  while(1) {
+    // Use vTaskDelay instead of delay() as it is nonblocking and works on freeRTOS.
+    // portTICK refers to one of the hardware ticktimers (clocks).
+    vTaskDelay(delayMS / portTICK_PERIOD_MS);
+    Serial.println("Tick!");
   }
 }
 
+void setup() {
+  // I found this frequency to work on the ESP32 C3.
+  Serial.begin(115200);
+
+  // Make sure our task only runs on one of the cores.
+  xTaskCreatePinnedToCore(
+        runDemoTask,       // Function to be called for the task
+        "Demo Task",       // Task Name
+        1024,              // Stack size - 1kb (bytes in ESP32, words in vanilla freeRTOS)
+        NULL,              // Parameter to pass to function
+        1,                 // Task prioerity (0 to configMAX_PRIORITIES - 1)
+        NULL,              // Task handle
+        app_cpu);          // Run on one core for demo purposes (ESP32 only)
+}
+
 void loop() {
-	  increment += 10;
-    delay(500); // Wait 500ms
-    if (verbose) {
-      Serial.println("Increment variable is now: " + String(increment));
-    }
+  // put your main code here, to run repeatedly:
 }
