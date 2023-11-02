@@ -4,6 +4,18 @@
   created on: november 2, 2023
 */
 
+/* <nikobk>:
+  The ESP32-C3-DevKitM-1 comes with FreeRTOS preinstalled (a modified version).
+  This modified version contains a Arduino library that allows you to write Arduino
+  code to the ESP32-C3's single core CPU.
+  C3 doc: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/hw-reference/esp32c3/user-guide-devkitm-1.html
+
+  There is no built-in LED other than the 5 voltage power on/off LED, and a RGB LED, it is important to note
+  that the RGB LED is controlled over CPIO8 which is located on the input/output pin 8.
+  I use the library: "Freenove WS2812 Lib for ESP32" to learn how to use this RGB LED.
+  Once installed there should be a "RGBW" example uner the Freenove library in the examples dropdown.
+*/
+
 // Use only core 1 for demo purposes
 #if CONFIG_FREERTOS_UNICORE
 static const BaseType_t app_cpu = 0;
