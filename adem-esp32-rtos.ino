@@ -38,7 +38,6 @@ void incrementValueOneTask(void *parameter) {
     // portTICK refers to one of the hardware ticktimers (clocks).
     Serial.println("Current valueOne value is: " + String(valueOne));
     valueOne += 10;
-    vTaskDelay(delayMS / portTICK_PERIOD_MS);
     if (verbose) {
       Serial.println("<Task1>: Tick!");
     }
@@ -49,7 +48,6 @@ void incrementValueTwoTask(void *parameter) {
   while(1) {
     Serial.println("Current valueTwo value is: " + String(valueTwo));
     valueTwo += 2;
-    vTaskDelay(delayMS / portTICK_PERIOD_MS);
     if (verbose) {
       Serial.println("<Task2>: Tick!");
     }
@@ -75,7 +73,7 @@ void setup() {
         "Number Increment 1",  
         1024,
         NULL,
-        1,
+        3,
         NULL,
         app_cpu); 
 }
