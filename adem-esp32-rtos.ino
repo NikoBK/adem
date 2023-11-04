@@ -27,19 +27,29 @@ int delayMS = 500;
 bool verbose = false;
 
 // Arbitrary number for exercise 1.
-int value = 10;
+int valueOne = 10;
+int valueTwo = 2;
 
 // Create a new task.
-void incrementTask(void *parameter) {
+void incrementValueOneTask(void *parameter) {
   // Our superloop.
   while(1) {
     // Use vTaskDelay instead of delay() as it is nonblocking and works on freeRTOS.
     // portTICK refers to one of the hardware ticktimers (clocks).
-    Serial.println("Current value is: " + String(value));
-    value += 10;
-    vTaskDelay(delayMS / portTICK_PERIOD_MS);
+    Serial.println("Current valueOne value is: " + String(valueOne));
+    valueOne += 10;
     if (verbose) {
       Serial.println("<Task1>: Tick!");
+    }
+  }
+}
+
+void incrementValueTwoTask(void *parameter) {
+  while(1) {
+    Serial.println("Current valueTwo value is: " + String(valueTwo));
+    valueTwo += 2;
+    if (verbose) {
+      Serial.println("<Task2>: Tick!");
     }
   }
 }
@@ -50,13 +60,22 @@ void setup() {
 
   // Make sure our task only runs on one of the cores.
   xTaskCreatePinnedToCore(
-        incrementTask,       // Function to be called for the task
+        incrementValueOneTask,       // Function to be called for the task
         "Number Increment 1",       // Task Name
         1024,              // Stack size - 1kb (bytes in ESP32, words in vanilla freeRTOS)
         NULL,              // Parameter to pass to function
         1,                 // Task prioerity (0 to configMAX_PRIORITIES - 1)
         NULL,              // Task handle
         app_cpu);          // Run on one core for demo purposes (ESP32 only)
+
+  xTaskCreatePinnedToCore(
+        incrementValueTwoTask, 
+        "Number Increment 1",  
+        1024,
+        NULL,
+        3,
+        NULL,
+        app_cpu); 
 }
 
 void loop() {
