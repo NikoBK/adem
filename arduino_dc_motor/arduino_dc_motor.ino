@@ -16,6 +16,7 @@ volatile unsigned long tS;  // tæller til at styre samplingstidspunkt - se i lo
 
 #define A1 8
 #define A2 9
+#define APWM 6
 
 // variables changed by ISRT so not synchronized with sampling time
 volatile int count;            // actual count
